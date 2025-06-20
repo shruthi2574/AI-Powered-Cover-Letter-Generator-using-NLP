@@ -52,7 +52,6 @@ uploaded = files.upload()
    ```
 
 4. Paste the job description when prompted.
-   ```
 5. View your professionally generated cover letter in the output cell.
 
   
