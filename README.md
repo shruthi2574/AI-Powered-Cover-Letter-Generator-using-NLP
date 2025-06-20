@@ -45,10 +45,6 @@ An intelligent Python-based application that automatically generates highly prof
    
 3. Upload your resume PDF when prompted:
 
-   ```bash
-  from google.colab import files  
-uploaded = files.upload()
-
 4. Paste the job description when prompted
 
 5. View your professionally generated cover letter in the output cell.
