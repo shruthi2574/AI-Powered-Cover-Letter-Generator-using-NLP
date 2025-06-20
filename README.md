@@ -42,6 +42,7 @@ An intelligent Python-based application that automatically generates highly prof
 
    ```python
    !pip install pymupdf
+   
 3. Upload your resume PDF when prompted:
 
    ```bash
