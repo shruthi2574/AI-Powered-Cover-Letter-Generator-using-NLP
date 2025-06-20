@@ -1,0 +1,188 @@
+Run each step in different cells of Google Colab
+step1:
+!pip install PyMuPDF
+step2:
+# 📄 AI-Powered Cover Letter Generator (Role-Aware Version)
+
+from google.colab import files
+import fitz  # PyMuPDF
+import string
+
+# Role-based templates for highly professional cover letters
+def get_role_template(role, skills):
+    role = role.lower()
+    skill_line = ", ".join(sorted(skills))
+
+    if "devops" in role or "cloud" in role:
+        return f"""
+Dear Hiring Manager,
+
+I am writing to express my interest in the Cloud/DevOps Engineer position at your organization. With a robust foundation in {skill_line}, I have successfully designed, deployed, and maintained scalable cloud infrastructures and automated CI/CD workflows across multiple environments.
+
+My experience includes implementing secure cloud practices, containerizing applications using Docker, and streamlining operations with tools like Jenkins and GitHub Actions. I am committed to delivering reliable and efficient systems that align with organizational goals.
+
+Thank you for considering my application. I look forward to the opportunity to contribute to your team's success.
+
+Sincerely,
+[Your Name]
+"""
+
+    elif "data analyst" in role:
+        return f"""
+Dear Hiring Manager,
+
+I am writing to apply for the Data Analyst position at your organization. My technical skills in {skill_line} are complemented by hands-on experience in interpreting large datasets and transforming data into actionable insights.
+
+I have developed interactive dashboards, conducted detailed statistical analysis, and built automated reporting solutions that supported business decision-making. I am passionate about storytelling through data and delivering measurable impact.
+
+Thank you for considering my candidacy. I welcome the opportunity to contribute to your data-driven initiatives.
+
+Sincerely,
+[Your Name]
+"""
+
+    elif "frontend" in role:
+        return f"""
+Dear Hiring Manager,
+
+I am excited to apply for the Frontend Developer role. With a strong command of {skill_line}, I specialize in crafting responsive, user-friendly interfaces that enhance user experience.
+
+I have successfully delivered scalable web applications using modern frameworks and followed best practices in accessibility and performance optimization. I am enthusiastic about UI/UX design and strive to build intuitive digital experiences.
+
+Thank you for reviewing my application. I look forward to contributing to your frontend development team.
+
+Sincerely,
+[Your Name]
+"""
+
+    elif "backend" in role:
+        return f"""
+Dear Hiring Manager,
+
+I am writing to express my interest in the Backend Developer position. My experience with {skill_line} has equipped me to design robust APIs, manage complex data structures, and build secure and scalable backend systems.
+
+I have worked extensively on microservices architecture, database optimization, and API integrations. My focus is on writing clean, maintainable code and ensuring high availability of backend services.
+
+I would be honored to contribute to your development efforts.
+
+Sincerely,
+[Your Name]
+"""
+
+    elif "full stack" in role:
+        return f"""
+Dear Hiring Manager,
+
+I am writing to express my keen interest in the Full Stack Developer role. With proven skills in {skill_line}, I bring end-to-end development experience across both frontend and backend technologies.
+
+I have led the design and deployment of full-cycle web applications, integrated REST APIs, and optimized performance for large-scale systems. I thrive in collaborative environments and am committed to delivering high-quality solutions.
+
+Thank you for considering my application. I look forward to the opportunity to contribute to your team.
+
+Sincerely,
+[Your Name]
+"""
+
+    elif "ai" in role or "artificial intelligence" in role:
+        return f"""
+Dear Hiring Manager,
+
+I am thrilled to apply for the AI Engineer position. My expertise in {skill_line} includes developing intelligent models and applying advanced machine learning techniques to solve real-world problems.
+
+I have worked on natural language processing, computer vision, and model deployment pipelines. I am passionate about innovation in AI and excited to bring my skills to your pioneering projects.
+
+Thank you for your time and consideration.
+
+Sincerely,
+[Your Name]
+"""
+
+    elif "cybersecurity" in role:
+        return f"""
+Dear Hiring Manager,
+
+I am submitting my application for the Cybersecurity position. My knowledge of {skill_line} underpins a strong capability in protecting systems from threats and maintaining security compliance.
+
+I have conducted risk assessments, developed secure configurations, and implemented intrusion detection mechanisms in enterprise environments. I take pride in creating a secure digital ecosystem.
+
+Thank you for the opportunity to apply.
+
+Sincerely,
+[Your Name]
+"""
+
+    elif "machine learning" in role or "ml" in role:
+        return f"""
+Dear Hiring Manager,
+
+I am writing to express my interest in the Machine Learning Intern position. I bring practical experience in {skill_line}, including model training, validation, and deployment.
+
+My projects have involved supervised and unsupervised learning techniques, feature engineering, and the use of modern ML frameworks. I am eager to grow in this field and contribute meaningfully to your team.
+
+Thank you for your consideration.
+
+Sincerely,
+[Your Name]
+"""
+
+    else:
+        return f"""
+Dear Hiring Manager,
+
+I am excited to apply for the open position at your organization. With a background in {skill_line}, I am confident in my ability to contribute effectively to your goals.
+
+I am passionate about continuous learning and dedicated to delivering quality results. I look forward to the opportunity to bring my skills and energy to your team.
+
+Sincerely,
+[Your Name]
+"""
+
+# Clean and tokenize text
+def clean_text(text):
+    text = text.lower()
+    text = text.translate(str.maketrans('', '', string.punctuation))
+    tokens = text.split()
+    stopwords = set([
+        "i", "am", "a", "an", "the", "and", "is", "are", "with", "of", "in", "to", 
+        "for", "on", "that", "this", "have", "has", "as", "my", "at", "be", "you"
+    ])
+    return set(word for word in tokens if word not in stopwords)
+
+# Generate letter from extracted skills and job title
+def generate_cover_letter(resume_text, job_desc, user_name):
+    resume_keywords = clean_text(resume_text)
+    job_keywords = clean_text(job_desc)
+    matched = resume_keywords.intersection(job_keywords)
+    if not matched:
+        matched = {"relevant skills"}
+
+    # Try to infer role
+    for line in job_desc.lower().splitlines():
+        if any(keyword in line for keyword in ["engineer", "developer", "analyst", "intern", "scientist"]):
+            job_title = line.strip()
+            break
+    else:
+        job_title = "the role"
+
+    letter = get_role_template(job_title, matched)
+    return letter.replace("[Your Name]", user_name)
+
+# Upload resume
+print("📄 Please upload your resume in PDF format:")
+uploaded = files.upload()
+resume_text = ""
+for filename in uploaded:
+    doc = fitz.open(filename)
+    for page in doc:
+        resume_text += page.get_text()
+print("✅ Resume text extracted successfully.")
+
+# Get inputs
+user_name = input("\n🖍️ Enter your full name: ")
+print("\n📋 Paste the job description below:")
+job_description = input()
+
+# Generate and print letter
+cover_letter = generate_cover_letter(resume_text, job_description, user_name)
+print("\n📄 Generated Cover Letter:\n")
+print(cover_letter)
