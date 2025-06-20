@@ -43,9 +43,9 @@ An intelligent Python-based application that automatically generates highly prof
    ```python
    !pip install pymupdf
    
-3. Upload your resume PDF when prompted:
+3. Upload your resume PDF when prompted.
 
-4. Paste the job description when prompted
+4. Paste the job description when prompted.
 
 5. View your professionally generated cover letter in the output cell.
    
